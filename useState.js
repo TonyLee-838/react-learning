@@ -1,13 +1,12 @@
-//Global
-var isMount = true;
-var workInProgressHook = null;
-var App_CurrentFiber = {
+let isMount = true;
+let workInProgressHook = null;
+let App_CurrentFiber = {
     memorizedState: null,
     stateNode: App,
     ref: null,
 };
 function useState(initialState) {
-    var hook = null;
+    let hook = null;
     if (isMount) {
         //init hook
         hook = {
@@ -35,13 +34,13 @@ function useState(initialState) {
         //move pointer to the next hook
         workInProgressHook = workInProgressHook.next;
     }
-    var baseState = hook.memorizedState;
-    var hasPendingHooks = !!hook.queue.pending;
+    let baseState = hook.memorizedState;
+    const hasPendingHooks = !!hook.queue.pending;
     if (hasPendingHooks) {
         //hook.queue.pending =(next)=> lastUpdate =(next)> firstUpdate
-        var firstUpdate = hook.queue.pending.next;
+        let firstUpdate = hook.queue.pending.next;
         do {
-            var updatedState = firstUpdate.action(baseState);
+            const updatedState = firstUpdate.action(baseState);
             baseState = updatedState;
             firstUpdate = firstUpdate.next;
         } while (hook.queue.pending.next !== firstUpdate);
@@ -51,27 +50,13 @@ function useState(initialState) {
     hook.memorizedState = baseState;
     return [
         baseState,
-        function (action) { return dispatchAction(hook.queue, action); },
+        (action) => dispatchAction(hook.queue, action),
     ];
 }
-function App() {
-    var _a = useState(0), number = _a[0], setNumber = _a[1];
-    function handleClick() {
-        setNumber(function (number) { return number + 1; });
-    }
-    console.log("<button>" + number + "</button>");
-    return {
-        type: "button",
-        key: null,
-        click: function () {
-            handleClick();
-        },
-    };
-}
 function dispatchAction(queue, action) {
-    var update = {
+    const update = {
         next: null,
-        action: action,
+        action,
     };
     if (!queue.pending) {
         //環狀鏈表構建
@@ -110,21 +95,39 @@ function dispatchAction(queue, action) {
 }
 function scheduleUpdates() {
     //hook以鏈表結構連接
-    var firstHook = App_CurrentFiber.memorizedState;
+    const firstHook = App_CurrentFiber.memorizedState;
     //當前正在工作的hook
     workInProgressHook = firstHook;
     //render App()
     App_CurrentFiber.ref = App_CurrentFiber.stateNode();
     isMount = false;
 }
+function App() {
+    const [number, setNumber] = useState(0);
+    const [string, setString] = useState("");
+    function handleClick() {
+        setNumber((number) => number + 1);
+        setNumber((number) => number + 1);
+        setNumber((number) => number + 1);
+        setString((str) => str + "a");
+    }
+    console.log(`<button>${number + "\t" + string}</button>`);
+    return {
+        type: "button",
+        key: null,
+        click() {
+            handleClick();
+        },
+    };
+}
 function mount() {
-    var ref = App();
+    const ref = App();
     isMount = false;
     return ref;
 }
 function renderButton() {
     console.log("render!!!");
-    var _a = mount(), click = _a.click, print = _a.print;
+    const { click } = mount();
     click();
     click();
     click();

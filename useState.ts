@@ -1,4 +1,3 @@
-//Global
 let isMount = true;
 let workInProgressHook: Hook<any> = null!;
 let App_CurrentFiber: Fiber = {
@@ -91,24 +90,6 @@ function useState<T>(initialState: T) {
   ] as unknown) as [T, (action: StateSetter<T>) => void];
 }
 
-function App() {
-  const [number, setNumber] = useState(0);
-
-  function handleClick() {
-    setNumber((number) => number + 1);
-  }
-
-  console.log(`<button>${number}</button>`);
-
-  return {
-    type: "button",
-    key: null,
-    click() {
-      handleClick();
-    },
-  };
-}
-
 function dispatchAction<T>(queue: UpdateQueue, action: StateSetter<T>) {
   const update: Update<T> = {
     next: null!,
@@ -167,6 +148,27 @@ function scheduleUpdates() {
   isMount = false;
 }
 
+function App() {
+  const [number, setNumber] = useState(0);
+  const [string, setString] = useState("");
+
+  function handleClick() {
+    setNumber((number) => number + 1);
+    setNumber((number) => number + 1);
+    setNumber((number) => number + 1);
+    setString((str) => str + "a");
+  }
+
+  console.log(`<button>${number + "\t" + string}</button>`);
+  return {
+    type: "button",
+    key: null,
+    click() {
+      handleClick();
+    },
+  };
+}
+
 function mount() {
   const ref = App();
   isMount = false;
@@ -177,7 +179,7 @@ function mount() {
 function renderButton() {
   console.log("render!!!");
 
-  const { click, print } = mount();
+  const { click } = mount();
 
   click();
 
