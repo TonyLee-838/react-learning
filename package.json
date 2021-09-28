@@ -4,7 +4,7 @@
   "description": "",
   "main": "useState.js",
   "scripts": {
-    "dev:useState": "concurrently \"tsc --watch\" \"nodemon useState.js\""
+    "dev:useState": "concurrently \"tsc --watch\" \"nodemon dist/useState.js\""
   },
   "keywords": [],
   "author": "",

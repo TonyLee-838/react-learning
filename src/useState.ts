@@ -178,16 +178,19 @@ function mount() {
 
 function renderButton() {
   console.log("render!!!");
-
   const { click } = mount();
 
   click();
+  console.log("update 1!!!");
 
   click();
+  console.log("update 2!!!");
 
   click();
+  console.log("update 3!!!");
 
   click();
+  console.log("update 4!!!");
 }
 
 renderButton();
